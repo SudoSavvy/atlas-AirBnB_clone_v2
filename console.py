@@ -2,6 +2,7 @@
 """ Console Module """
 import cmd
 import sys
+import json
 from models.base_model import BaseModel
 from models.__init__ import storage
 from models.user import User
@@ -30,6 +31,18 @@ class HBNBCommand(cmd.Cmd):
              'latitude': float, 'longitude': float
             }
 
+    def load_storage():
+    
+        try:
+            with open("file.json", "r") as file:
+                data = json.load(file)
+            # Process data...
+        except FileNotFoundError:
+            print("file.json not found. Please ensure it exists or is created by your program.")
+            # Optionally, you can initialize data as an empty dictionary or list
+            data = {}  # or data = []
+        return data
+    
     def preloop(self):
         """Prints if isatty is false"""
         if not sys.__stdin__.isatty():
