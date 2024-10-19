@@ -113,18 +113,57 @@ class HBNBCommand(cmd.Cmd):
         """ Overrides the emptyline method of CMD """
         pass
 
-    def do_create(self, args):
-        """ Create an object of any class"""
-        if not args:
+    def do_create(self, arg):
+        """Creates a new instance of a given class with specified attributes."""
+        args = arg.split()
+        if len(args) == 0:
             print("** class name missing **")
             return
-        elif args not in HBNBCommand.classes:
+
+        class_name = args[0]
+
+        # Check if class exists
+        if class_name not in models.classes:
             print("** class doesn't exist **")
             return
-        new_instance = HBNBCommand.classes[args]()
-        storage.save()
+
+        # Create a dictionary to hold attribute key-value pairs
+        kwargs = {}
+
+        # Process each argument after the class name
+        for param in args[1:]:
+            if "=" not in param:
+                continue  # skip if the parameter is malformed
+
+            key, value = param.split("=", 1)
+
+            # Handle string values
+            if value.startswith('"') and value.endswith('"'):
+                value = value[1:-1].replace("_", " ").replace('\\"', '"')
+
+            # Handle float values
+            elif "." in value:
+                try:
+                    value = float(value)
+                except ValueError:
+                    continue  # skip invalid float
+
+            # Handle integer values
+            else:
+                try:
+                    value = int(value)
+                except ValueError:
+                    continue  # skip invalid int
+
+            # Add the key-value pair to the kwargs dictionary
+            kwargs[key] = value
+
+        # Create an instance with the parsed attributes
+        new_instance = models.classes[class_name](**kwargs)
+        new_instance.save()
+
         print(new_instance.id)
-        storage.save()
+
 
     def help_create(self):
         """ Help information for the create method """
