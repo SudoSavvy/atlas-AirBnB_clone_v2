@@ -32,16 +32,40 @@ class HBNBCommand(cmd.Cmd):
             }
 
     def load_storage():
-    
+        file_path = "file.json"  # or os.path.abspath("file.json")
+
+        # Check if the file exists
+        if not os.path.exists(file_path):
+            print("file.json not found. A new one will be created.")
+            return {}  # Initialize empty storage
+
+        # Check if the file is empty
+        if os.path.getsize(file_path) == 0:
+            print("file.json is empty. Initializing with default values.")
+            return {}  # Return an empty structure
+
+        # Attempt to load data from the file
         try:
-            with open("file.json", "r") as file:
+            with open(file_path, "r") as file:
                 data = json.load(file)
-            # Process data...
-        except FileNotFoundError:
-            print("file.json not found. Please ensure it exists or is created by your program.")
-            # Optionally, you can initialize data as an empty dictionary or list
-            data = {}  # or data = []
-        return data
+
+            if not isinstance(data, (dict, list)):
+                raise ValueError("Data in file.json must be a dictionary or a list.")
+
+            return data
+
+        except json.JSONDecodeError:
+            print("Error decoding JSON from file.json. Please check the file format.")
+            return {}  # Return an empty dictionary if there's an error
+        except ValueError as ve:
+            print(f"ValueError: {ve}")
+            return {}  # Handle the case where data is not a valid structure
+        except Exception as e:
+            print(f"An unexpected error occurred: {e}")
+            return {}  # Handle unexpected errors
+
+    # Call this function somewhere in your code to load the storage
+    storage_data = load_storage()
     
     def preloop(self):
         """Prints if isatty is false"""
