@@ -125,74 +125,30 @@ class HBNBCommand(cmd.Cmd):
         pass
 
     def do_create(self, arg):
-        """Create a new instance of a model."""
+        """Creates a new instance of a class and saves it to the database."""
         args = arg.split()
-        if len(args) == 0:
+        if not args:
             print("** class name missing **")
             return
 
         class_name = args[0]
-
-        # Check if class exists in the storage dictionary
-        if class_name not in storage.classes():
+        if class_name not in HBNBCommand.classes:
             print("** class doesn't exist **")
             return
 
-        # For creating State specifically
-        if class_name == "State":
-            try:
-                name = args[1].split('=')[1].replace('_', ' ').strip('"')
-                new_instance = State(name=name)
-                new_instance.save()
-                print(new_instance.id)
-            except IndexError:
-                print("** name missing **")
-            return
-
-    # Additional logic for other models if needed
-
-
-        # Extract parameters
         kwargs = {}
-        for arg in args[1:]:
-            if "=" in arg:
-                key, value = arg.split("=", 1)
-                value = value.replace('_', ' ').strip('"').strip("'")
-                if '.' in value:  # Check for float values
-                    try:
-                        value = float(value)
-                    except ValueError:
-                        pass
-                else:  # Assume integer otherwise
-                    try:
-                        value = int(value)
-                    except ValueError:
-                        pass
+        for pair in args[1:]:
+            key, value = pair.split('=')
+            value = value.strip('"').replace('_', ' ')
+            if value.isdigit():
+                kwargs[key] = int(value)
+            else:
                 kwargs[key] = value
-        
-        # Special handling for City and State creation
-        if class_name == "State":
-            if "name" not in kwargs:
-                print("** name missing **")
-                return
 
-        if class_name == "City":
-            if "name" not in kwargs:
-                print("** name missing **")
-                return
-            if "state_id" not in kwargs:
-                print("** state_id missing **")
-                return
-            # Verify if the state_id exists in the database
-            state = storage.all("State").get(f"State.{kwargs['state_id']}")
-            if not state:
-                print("** state_id not found **")
-                return
-
-        # Create the instance
-        new_instance = classes[class_name](**kwargs)
+        new_instance = HBNBCommand.classes[class_name](**kwargs)
         new_instance.save()
         print(new_instance.id)
+
 
         print(f"Error: {e}")
         return
