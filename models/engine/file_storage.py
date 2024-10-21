@@ -2,6 +2,7 @@
 """FileStorage class for AirBnB project"""
 
 import os
+import json
 from models.base_model import BaseModel
 from models.user import User
 from models.state import State
@@ -18,12 +19,11 @@ class FileStorage:
     __objects = {}
 
     def all(self, cls=None):
-        """Returns a dictionary of models currently in storage.
-        Optionally filters by a class type.
-        """
+        """Returns a dictionary of all objects or filtered by class"""
         if cls:
-            return {key: obj for key, obj in self.__objects.items() if isinstance(obj, cls)}
+            return {key: val for key, val in self.__objects.items() if isinstance(val, cls)}
         return self.__objects
+
 
     def new(self, obj):
         """Adds new object to storage dictionary"""
@@ -48,10 +48,9 @@ class FileStorage:
                 self.__objects = {}
 
     def delete(self, obj=None):
-            """Deletes obj from __objects if it's inside."""
-            if obj is None:
-                return
-            key = "{}.{}".format(type(obj).__name__, obj.id)
+        """Deletes obj from __objects if it's inside."""
+        if obj is not None:
+            key = obj.__class__.__name__ + '.' + obj.id
             if key in self.__objects:
                 del self.__objects[key]
 
