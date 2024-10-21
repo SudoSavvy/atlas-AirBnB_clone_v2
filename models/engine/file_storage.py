@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 """FileStorage class for AirBnB project"""
 
-import json
+import os
 from models.base_model import BaseModel
 from models.user import User
 from models.state import State
@@ -35,15 +35,17 @@ class FileStorage:
             json.dump({key: obj.to_dict() for key, obj in self.__objects.items()}, f)
 
     def reload(self):
-        """Deserializes the JSON file to __objects"""
-        try:
-            with open(self.__file_path, 'r') as f:
-                objects_dict = json.load(f)
-                for key, value in objects_dict.items():
-                    class_name = key.split('.')[0]
-                    self.__objects[key] = eval(class_name)(**value)
-        except FileNotFoundError:
-            pass
+        """Deserializes the JSON file to __objects, handling empty file case."""
+        if os.path.exists(self.__file_path):
+            try:
+                with open(self.__file_path, 'r', encoding="utf-8") as f:
+                    objects_dict = json.load(f)
+                    for key, value in objects_dict.items():
+                        cls_name = value["__class__"]
+                        self.__objects[key] = eval(cls_name)(**value)
+            except json.JSONDecodeError:
+                # If the file is empty or invalid, leave __objects as an empty dict
+                self.__objects = {}
 
     def delete(self, obj=None):
             """Deletes obj from __objects if it's inside."""
