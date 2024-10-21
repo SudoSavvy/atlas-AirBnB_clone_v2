@@ -124,19 +124,33 @@ class HBNBCommand(cmd.Cmd):
         """ Overrides the emptyline method of CMD """
         pass
 
-def do_create(self, args):
-    """Creates a new instance of BaseModel, saves it, and prints the id."""
-    try:
-        if not args:
+    def do_create(self, arg):
+        """Create a new instance of a model."""
+        args = arg.split()
+        if len(args) == 0:
             print("** class name missing **")
             return
-        
-        args = args.split()
+
         class_name = args[0]
 
-        if class_name not in classes:
+        # Check if class exists in the storage dictionary
+        if class_name not in storage.classes():
             print("** class doesn't exist **")
             return
+
+        # For creating State specifically
+        if class_name == "State":
+            try:
+                name = args[1].split('=')[1].replace('_', ' ').strip('"')
+                new_instance = State(name=name)
+                new_instance.save()
+                print(new_instance.id)
+            except IndexError:
+                print("** name missing **")
+            return
+
+    # Additional logic for other models if needed
+
 
         # Extract parameters
         kwargs = {}
@@ -180,7 +194,7 @@ def do_create(self, args):
         new_instance.save()
         print(new_instance.id)
 
-    except Exception as e:
+        except Exception as e:
         print(f"Error: {e}")
         return
 
