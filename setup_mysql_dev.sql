@@ -9,6 +9,15 @@ CREATE TABLE IF NOT EXISTS states (
     name VARCHAR(128) NOT NULL
 );
 
+CREATE DATABASE IF NOT EXISTS hbnb_dev_db;
+USE hbnb_dev_db;
+
+CREATE TABLE IF NOT EXISTS states (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(128) NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
 -- Grant all privileges on hbnb_dev_db to hbnb_dev
 GRANT ALL PRIVILEGES ON hbnb_dev_db.* TO 'hbnb_dev'@'localhost';
 
