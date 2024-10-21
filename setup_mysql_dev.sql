@@ -16,9 +16,13 @@ CREATE TABLE IF NOT EXISTS states (
     name VARCHAR(128) NOT NULL
 );
 
-
-CREATE DATABASE IF NOT EXISTS hbnb_dev_db;
-USE hbnb_dev_db;
+-- Create table for cities with a foreign key to states
+CREATE TABLE IF NOT EXISTS cities (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    state_id INT NOT NULL,
+    name VARCHAR(128) NOT NULL,
+    CONSTRAINT fk_state FOREIGN KEY (state_id) REFERENCES states(id) ON DELETE CASCADE
+);
 
 -- Grant all privileges on hbnb_dev_db to hbnb_dev
 GRANT ALL PRIVILEGES ON hbnb_dev_db.* TO 'hbnb_dev'@'localhost';
