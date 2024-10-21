@@ -21,6 +21,7 @@ class DBStorage:
 
         self.__engine = create_engine(f'mysql+mysqldb://{user}:{password}@{host}/{db}', pool_pre_ping=True)
 
+        # Drop all tables if we are in test environment
         if env == "test":
             Base.metadata.drop_all(self.__engine)
 
@@ -28,11 +29,13 @@ class DBStorage:
         """Query on the current database session."""
         objects = {}
         if cls:
+            # If a specific class is provided, query for it
             query = self.__session.query(cls).all()
             for obj in query:
                 key = f"{type(obj).__name__}.{obj.id}"
                 objects[key] = obj
         else:
+            # Query for all objects if no class is provided
             for class_type in [State, City]:
                 query = self.__session.query(class_type).all()
                 for obj in query:
