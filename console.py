@@ -124,30 +124,40 @@ class HBNBCommand(cmd.Cmd):
         """ Overrides the emptyline method of CMD """
         pass
 
-    def do_create(self, arg):
-        """Creates a new instance of a class and saves it to the database."""
-        args = arg.split()
-        if not args:
-            print("** class name missing **")
-            return
+    def do_create(self, args):
+        """Creates a new instance of a class"""
+        try:
+            if not args:
+                print("** class name missing **")
+                return
+            arg_list = args.split()
+            class_name = arg_list[0]
 
-        class_name = args[0]
-        if class_name not in HBNBCommand.classes:
-            print("** class doesn't exist **")
-            return
+            if class_name not in HBNBCommand.classes:
+                print("** class doesn't exist **")
+                return
+            
+            # Create a dictionary of attributes from the remaining args
+            kwargs = {}
+            for arg in arg_list[1:]:
+                if "=" in arg:
+                    key, value = arg.split("=")
+                    value = value.strip('"').replace('_', ' ')
+                    # Handle integer and float conversion
+                    if value.isdigit():
+                        kwargs[key] = int(value)
+                    else:
+                        try:
+                            kwargs[key] = float(value)
+                        except ValueError:
+                            kwargs[key] = value
 
-        kwargs = {}
-        for pair in args[1:]:
-            key, value = pair.split('=')
-            value = value.strip('"').replace('_', ' ')
-            if value.isdigit():
-                kwargs[key] = int(value)
-            else:
-                kwargs[key] = value
-
-        new_instance = HBNBCommand.classes[class_name](**kwargs)
-        new_instance.save()
-        print(new_instance.id)
+            # Create a new instance and save it
+            new_instance = HBNBCommand.classes[class_name](**kwargs)
+            new_instance.save()
+            print(new_instance.id)
+        except Exception as e:
+            print(e)
 
 
         print(f"Error: {e}")
