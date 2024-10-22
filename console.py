@@ -3,6 +3,8 @@
 import cmd
 import sys
 import json
+import models
+from shlex import split
 from models.base_model import BaseModel
 from models.__init__ import storage
 from models.user import User
@@ -124,50 +126,32 @@ class HBNBCommand(cmd.Cmd):
         """ Overrides the emptyline method of CMD """
         pass
 
-    def do_create(self, arg):
-        """Create a new instance of a class."""
-        if not arg:
+     def do_create(self, arg):
+        """Create an instance of a class"""
+        args = split(arg)
+        if len(args) == 0:
             print("** class name missing **")
             return
 
-        args = arg.split()  # split by spaces
         class_name = args[0]
-
-        # Check if the class exists
-        if class_name not in HBNBCommand.classes:
+        if class_name not in models.classes:
             print("** class doesn't exist **")
             return
 
-        # Parse the arguments (params)
-        params = {}
+        kwargs = {}
         for param in args[1:]:
-            key_value = param.split("=", 1)
-            if len(key_value) == 2:
-                key, value = key_value
+            key, value = param.split('=')
+            kwargs[key] = value.strip('"').replace('_', ' ')
 
-                # Check if the value is a string
-                if value.startswith('"') and value.endswith('"'):
-                    value = value[1:-1].replace("_", " ").replace('\\"', '"')
+        if class_name == "User":
+            if "email" not in kwargs:
+                print("** email is missing **")
+                return
+            if "password" not in kwargs:
+                print("** password is missing **")
+                return
 
-                # Check if the value is an integer
-                elif value.isdigit():
-                    value = int(value)
-
-                # Check if the value is a float
-                else:
-                    try:
-                        value = float(value)
-                    except ValueError:
-                        continue  # Skip invalid values
-
-                params[key] = value
-
-        # Create a new instance with the given params
-        new_instance = HBNBCommand.classes[class_name]()
-        for key, value in params.items():
-            if hasattr(new_instance, key):
-                setattr(new_instance, key, value)
-
+        new_instance = models.classes[class_name](**kwargs)
         new_instance.save()
         print(new_instance.id)
 
