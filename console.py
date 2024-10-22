@@ -171,8 +171,16 @@ class HBNBCommand(cmd.Cmd):
         new_instance.save()
         print(new_instance.id)
 
-        print(f"Error: {e}")
-        return
+        try:
+            # Assuming this is where your object creation happens
+            new_instance = class_dict[class_name]()
+            # Set attributes here based on passed arguments
+            storage.new(new_instance)
+            storage.save()
+            print(new_instance.id)
+        except Exception as e:
+            print(f"Error: {e}")
+
 
     def help_create(self):
         """ Help information for the create method """
