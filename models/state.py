@@ -11,7 +11,7 @@ from sqlalchemy.orm import relationship
 
 class State(BaseModel, Base):
     """class that represents the state values"""
-    if models.storage_t == "db":
+    if models.storage == "db":
         __tablename__ = 'states'
         name = Column(String(128), nullable=False)
         cities = relationship("City", backref="state")
