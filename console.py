@@ -124,40 +124,54 @@ class HBNBCommand(cmd.Cmd):
         """ Overrides the emptyline method of CMD """
         pass
 
-    def do_create(self, args):
-        """Creates a new instance of a class"""
-        try:
-            if not args:
-                print("** class name missing **")
-                return
-            arg_list = args.split()
-            class_name = arg_list[0]
+    def do_create(self, arg):
+        """Create a new instance of a class."""
+        if not arg:
+            print("** class name missing **")
+            return
 
-            if class_name not in HBNBCommand.classes:
-                print("** class doesn't exist **")
-                return
-            
-            # Create a dictionary of attributes from the remaining args
-            kwargs = {}
-            for arg in arg_list[1:]:
-                if "=" in arg:
-                    key, value = arg.split("=")
-                    value = value.strip('"').replace('_', ' ')
-                    # Handle integer and float conversion
-                    if value.isdigit():
-                        kwargs[key] = int(value)
-                    else:
-                        try:
-                            kwargs[key] = float(value)
-                        except ValueError:
-                            kwargs[key] = value
+        args = arg.split()  # split by spaces
+        class_name = args[0]
 
-            # Create a new instance and save it
-            new_instance = HBNBCommand.classes[class_name](**kwargs)
-            new_instance.save()
-            print(new_instance.id)
+        # Check if the class exists
+        if class_name not in HBNBCommand.classes:
+            print("** class doesn't exist **")
+            return
+
+        # Parse the arguments (params)
+        params = {}
+        for param in args[1:]:
+            key_value = param.split("=", 1)
+            if len(key_value) == 2:
+                key, value = key_value
+
+                # Check if the value is a string
+                if value.startswith('"') and value.endswith('"'):
+                    value = value[1:-1].replace("_", " ").replace('\\"', '"')
+
+                # Check if the value is an integer
+                elif value.isdigit():
+                    value = int(value)
+
+                # Check if the value is a float
+                else:
+                    try:
+                        value = float(value)
+                    except ValueError:
+                        continue  # Skip invalid values
+
+                params[key] = value
+
+        # Create a new instance with the given params
+        new_instance = HBNBCommand.classes[class_name]()
+        for key, value in params.items():
+            if hasattr(new_instance, key):
+                setattr(new_instance, key, value)
+
+        new_instance.save()
+        print(new_instance.id)
         except Exception as e:
-            print(e)
+        print(e)
 
 
         print(f"Error: {e}")
