@@ -5,6 +5,9 @@ import sys
 import json
 from models.base_model import BaseModel
 from models.__init__ import storage
+from shlex import split
+from models import storage
+from datetime import datetime
 from models.user import User
 from models.place import Place
 from models.state import State
@@ -124,44 +127,34 @@ class HBNBCommand(cmd.Cmd):
         """ Overrides the emptyline method of CMD """
         pass
 
-    def do_create(self, args):
-        """Creates a new instance of a class"""
+    def do_create(self, line):
+        """creates a new instance of BaseModel, saves it
+        Exceptions:
+            SyntaxError: when there is no args given
+            NameError: when there is no object taht has the name
+        """
         try:
-            if not args:
-                print("** class name missing **")
-                return
-            arg_list = args.split()
-            class_name = arg_list[0]
-
-            if class_name not in HBNBCommand.classes:
-                print("** class doesn't exist **")
-                return
-            
-            # Create a dictionary of attributes from the remaining args
-            kwargs = {}
-            for arg in arg_list[1:]:
-                if "=" in arg:
-                    key, value = arg.split("=")
-                    value = value.strip('"').replace('_', ' ')
-                    # Handle integer and float conversion
-                    if value.isdigit():
-                        kwargs[key] = int(value)
-                    else:
-                        try:
-                            kwargs[key] = float(value)
-                        except ValueError:
-                            kwargs[key] = value
-
-            # Create a new instance and save it
-            new_instance = HBNBCommand.classes[class_name](**kwargs)
-            new_instance.save()
-            print(new_instance.id)
-        except Exception as e:
-            print(e)
-
-
-        print(f"Error: {e}")
-        return
+            if not line:
+                raise SyntaxError()
+            my_list = line.split(" ")
+            obj = eval("{}()".format(my_list[0]))
+            print("{}".format(obj.id))
+            for num in range(1, len(my_list)):
+                my_list[num] = my_list[num].replace('=', ' ')
+                attributes = split(my_list[num])
+                attributes[1] = attributes[1].replace('_', ' ')
+                try:
+                    var = eval(attributes[1])
+                    attributes[1] = var
+                except:
+                    pass
+                if type(attributes[1]) is not tuple:
+                    setattr(obj, attributes[0], attributes[1])
+            obj.save()
+        except SyntaxError:
+            print("** class name missing **")
+        except NameError:
+            print("** class doesn't exist **")
 
 
 
