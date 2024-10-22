@@ -149,16 +149,6 @@ class HBNBCommand(cmd.Cmd):
         print("Creates a class of any type")
         print("[Usage]: create <className>\n")
 
-    def ensure_mysql_running():
-        try:
-            output = subprocess.check_output(['service', 'mysql', 'status'])
-            if 'active (running)' not in output.decode('utf-8'):
-                subprocess.check_call(['service', 'mysql', 'start'])
-        except subprocess.CalledProcessError:
-            print("Error: Unable to start MySQL service")
-
-    ensure_mysql_running()
-
     def do_show(self, args):
         """ Method to show an individual object """
         new = args.partition(" ")
