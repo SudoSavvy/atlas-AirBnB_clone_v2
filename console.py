@@ -4,9 +4,13 @@ import cmd
 import sys
 import json
 import models
+import shlex
 from shlex import split
 from models.base_model import BaseModel
 from models.__init__ import storage
+from shlex import split
+from models import storage
+from datetime import datetime
 from models.user import User
 from models.place import Place
 from models.state import State
@@ -14,6 +18,11 @@ from models.city import City
 from models.amenity import Amenity
 from models.review import Review
 
+classes = {
+           'BaseModel': BaseModel, 'User': User, 'Place': Place,
+           'State': State, 'City': City, 'Amenity': Amenity,
+           'Review': Review
+          }
 
 class HBNBCommand(cmd.Cmd):
     """ Contains the functionality for the HBNB console"""
@@ -109,6 +118,27 @@ class HBNBCommand(cmd.Cmd):
         """ Method to exit the HBNB console"""
         exit()
 
+    def _key_value_parser(self, args):
+        """creates a dictionary from a list of strings"""
+        new_dict = {}
+        for arg in args:
+            if "=" in arg:
+                kvp = arg.split('=', 1)
+                key = kvp[0]
+                value = kvp[1]
+                if value[0] == value[-1] == '"':
+                    value = shlex.split(value)[0].replace('_', ' ')
+                else:
+                    try:
+                        value = int(value)
+                    except:
+                        try:
+                            value = float(value)
+                        except:
+                            continue
+                new_dict[key] = value
+        return new_dict
+
     def help_quit(self):
         """ Prints the help documentation for quit  """
         print("Exits the program with formatting\n")
@@ -126,60 +156,25 @@ class HBNBCommand(cmd.Cmd):
         """ Overrides the emptyline method of CMD """
         pass
 
-     def do_create(self, arg):
-        """Create an instance of a class"""
-        args = split(arg)
+    def do_create(self, arg):
+        """Creates a new instance of a the Basemodel"""
+        args = arg.split()
         if len(args) == 0:
             print("** class name missing **")
-            return
-
-        class_name = args[0]
-        if class_name not in models.classes:
+            return False
+        if args[0] in classes:
+            new_dict = self._key_value_parser(args[1:])
+            instance = classes[args[0]](**new_dict)
+        else:
             print("** class doesn't exist **")
-            return
-
-        kwargs = {}
-        for param in args[1:]:
-            key, value = param.split('=')
-            kwargs[key] = value.strip('"').replace('_', ' ')
-
-        if class_name == "User":
-            if "email" not in kwargs:
-                print("** email is missing **")
-                return
-            if "password" not in kwargs:
-                print("** password is missing **")
-                return
-
-        new_instance = models.classes[class_name](**kwargs)
-        new_instance.save()
-        print(new_instance.id)
-
-        try:
-            # Assuming this is where your object creation happens
-            new_instance = class_dict[class_name]()
-            # Set attributes here based on passed arguments
-            storage.new(new_instance)
-            storage.save()
-            print(new_instance.id)
-        except Exception as e:
-            print(f"Error: {e}")
-
+            return False
+        print(instance.id)
+        instance.save()
 
     def help_create(self):
         """ Help information for the create method """
         print("Creates a class of any type")
         print("[Usage]: create <className>\n")
-
-    def ensure_mysql_running():
-        try:
-            output = subprocess.check_output(['service', 'mysql', 'status'])
-            if 'active (running)' not in output.decode('utf-8'):
-                subprocess.check_call(['service', 'mysql', 'start'])
-        except subprocess.CalledProcessError:
-            print("Error: Unable to start MySQL service")
-
-    ensure_mysql_running()
 
     def do_show(self, args):
         """ Method to show an individual object """
