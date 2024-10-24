@@ -1,19 +1,37 @@
 #!/usr/bin/python3
-""" """
-from tests.test_models.test_base_model import test_basemodel
+import unittest
 from models.state import State
+from models import storage
+import MySQLdb
 
+class TestState(unittest.TestCase):
 
-class test_state(test_basemodel):
-    """ """
+    @unittest.skipIf(type(storage).__name__ != 'DBStorage', "DBStorage test only")
+    def test_create_state_db(self):
+        """Test state creation in DBStorage"""
+        db = MySQLdb.connect(host="localhost", user="hbnb_test", passwd="hbnb_test_pwd", db="hbnb_test_db")
+        cursor = db.cursor()
 
-    def __init__(self, *args, **kwargs):
-        """ """
-        super().__init__(*args, **kwargs)
-        self.name = "State"
-        self.value = State
+        # Check state count before creation
+        cursor.execute("SELECT COUNT(*) FROM states;")
+        count_before = cursor.fetchone()[0]
 
-    def test_name3(self):
-        """ """
-        new = self.value()
-        self.assertEqual(type(new.name), str)
+        # Create state
+        state = State(name="California")
+        state.save()
+
+        # Check state count after creation
+        cursor.execute("SELECT COUNT(*) FROM states;")
+        count_after = cursor.fetchone()[0]
+
+        self.assertEqual(count_after, count_before + 1)
+        cursor.close()
+        db.close()
+
+    @unittest.skipIf(type(storage).__name__ != 'FileStorage', "FileStorage test only")
+    def test_create_state_file(self):
+        """Test state creation in FileStorage"""
+        state = State(name="California")
+        state.save()
+        states = storage.all(State)
+        self.assertIn(state, states.values())
