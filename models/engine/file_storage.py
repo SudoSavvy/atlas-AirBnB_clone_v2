@@ -40,22 +40,16 @@ class FileStorage:
             return self.__objects
 
     def new(self, obj):
-        """sets __object to given obj
-        Args:
-            obj: given object
-        """
-        if obj:
-            key = "{}.{}".format(type(obj).__name__, obj.id)
-            self.__objects[key] = obj
+        """Sets obj in __objects with key <obj class name>.id"""
+        key = "{}.{}".format(obj.__class__.__name__, obj.id)
+        self.__objects[key] = obj
+        self.save()  # Ensure save is called to update the JSON file
 
     def save(self):
-        """serialize the file path to JSON file path
-        """
-        my_dict = {}
-        for key, value in self.__objects.items():
-            my_dict[key] = value.to_dict()
-        with open(self.__file_path, 'w', encoding="UTF-8") as f:
-            json.dump(my_dict, f)
+        """Serializes __objects to the JSON file"""
+        with open(self.__file_path, "w") as file:
+            json.dump({key: obj.to_dict() for key, obj in self.__objects.items()}, file)
+
 
     def reload(self):
         """Deserializes the JSON file to __objects if it exists."""
