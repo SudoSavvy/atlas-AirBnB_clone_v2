@@ -13,8 +13,12 @@ class Place(BaseModel, Base):
     """Represents a Place for a MySQL database."""
     __tablename__ = 'places'
 
-    # Add the foreign key for user
+    id = Column(String(60), primary_key=True)
+    city_id = Column(String(60), ForeignKey('cities.id'), nullable=False)  # Add this line
     user_id = Column(String(60), ForeignKey('users.id'), nullable=False)
 
     # Relationship with Amenity
     amenities = relationship('Amenity', secondary=place_amenity, viewonly=False)
+
+    # Relationship with City
+    city = relationship('City', backref='places')  # Add this line

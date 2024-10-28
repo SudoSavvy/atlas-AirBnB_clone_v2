@@ -9,10 +9,11 @@ from models.place import Place
 
 
 class City(BaseModel, Base):
-    """Represents a city for a MySQL database."""
+    """Represents a City for a MySQL database."""
     __tablename__ = 'cities'
 
-    name = Column(String(128), nullable=False)
+    id = Column(String(60), primary_key=True)
     state_id = Column(String(60), ForeignKey('states.id'), nullable=False)
 
-    places = relationship("Place", backref="city", cascade='all, delete, delete-orphan')
+    # Relationship with Place
+    places = relationship('Place', backref='city')  # This line creates the relationship
