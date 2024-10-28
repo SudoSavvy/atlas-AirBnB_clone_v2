@@ -14,11 +14,8 @@ class Place(BaseModel, Base):
     __tablename__ = 'places'
 
     id = Column(String(60), primary_key=True)
-    city_id = Column(String(60), ForeignKey('cities.id'), nullable=False)  # Add this line
+    city_id = Column(String(60), ForeignKey('cities.id'), nullable=False)  # Foreign key reference
     user_id = Column(String(60), ForeignKey('users.id'), nullable=False)
 
-    # Relationship with Amenity
-    amenities = relationship('Amenity', secondary=place_amenity, viewonly=False)
-
     # Relationship with City
-    city = relationship('City', backref='places')  # Add this line
+    city = relationship('City', back_populates='places')  # Make sure this matches
