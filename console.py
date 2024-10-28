@@ -113,38 +113,36 @@ class HBNBCommand(cmd.Cmd):
 
 def do_create(self, arg):
     """ create object of predetermined classes """
-
-    args = arg.split()
-    if len(args) == 0:
+    if not args:
         print("** class name missing **")
-        return False
-
-    class_name = args[0]
+        return
+    tokens = args.split()
+    class_name = tokens[0]
     if class_name not in HBNBCommand.classes:
         print("** class doesn't exist **")
-        return False
-
-    kwargs = {}
-    for param in args[1:]:
-        
-        key_value = param.split('=')
-        if len(key_value) != 2:  
+        return
+    new_instance = HBNBCommand.classes[class_name]()
+    for nargs in tokens[1:]:
+        if '=' not in nargs:
             continue
-
-        attr_name = key_value[0]
-        attr_value = key_value[1]
-
-        if re.match(r'^\".*\"$', attr_value):
-            
-            attr_value = attr_value[1:-1].replace('_', ' ')
-        elif re.match(r'^\-?\d+\.\d+$', attr_value):
-            attr_value = float(attr_value)
-        elif re.match(r'^\-?\d+$', attr_value):
-            attr_value = int(attr_value)
+        key, value = nargs.split('=', 1)
+        if value.startswith('"') and value.endswith('"'):
+            value = value[1:-1].replace('_', ' ')
+            value = value.replace('\\', '"')
+        elif '.' in value:
+            try:
+                value = float(value)
+            except ValueError:
+                continue
         else:
-            continue
-
-        kwargs[attr_name] = attr_value
+            try:
+                value = int(value)
+            except ValueError:
+                continue
+        setattr(new_instance, key, value)
+    storage.save()
+    print(new_instance.id)
+    storage.save()
 
     def help_create(self):
         """ help info for create method """
