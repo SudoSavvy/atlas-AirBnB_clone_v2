@@ -118,8 +118,6 @@ class HBNBCommand(cmd.Cmd):
     def emptyline(self):
         """ overrides emptyline method of CMD """
         pass
-    
-    import re
 
     def do_create(self, arg):
         args = arg.split()
@@ -162,6 +160,7 @@ class HBNBCommand(cmd.Cmd):
 
 
 
+
     def help_create(self):
         """ help info for create method """
         print("Creates a class of any type")
@@ -189,7 +188,6 @@ class HBNBCommand(cmd.Cmd):
 
             # Format the output as expected
             print("[{}] ({}) {}".format(class_name, obj.id, obj_dict))
-
 
     def help_show(self):
         """ help info for show command """
