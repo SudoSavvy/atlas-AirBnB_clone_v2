@@ -181,7 +181,7 @@ class HBNBCommand(cmd.Cmd):
         else:
             # Convert obj to a dictionary and filter out undesired attributes
             obj_dict = (
-                obj.to_dict() if hasattr(obj, "to_dict") else obj.__dict__.copy()
+            obj.to_dict() if hasattr(obj, "to_dict") else obj.__dict__.copy()
             )
             obj_dict.pop('_sa_instance_state', None)
 
