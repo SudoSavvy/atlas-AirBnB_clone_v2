@@ -30,6 +30,7 @@ classes = {
     "Place": Place
 }
 
+
 class HBNBCommand(cmd.Cmd):
     """ console class """
 
@@ -56,7 +57,6 @@ class HBNBCommand(cmd.Cmd):
         """ reformat command line for alter syntax """
         _cmd = _cls = _id = _args = ''
 
-        
         if not ('.' in line and '(' in line and ')' in line):
             return line
 
@@ -71,20 +71,20 @@ class HBNBCommand(cmd.Cmd):
 
             pline = pline[pline.find('(') + 1:pline.find(')')]
             if pline:
-                
+
                 pline = pline.partition(', ')
 
                 _id = pline[0].replace('\"', '')
 
                 pline = pline[2].strip()
                 if pline:
-                    
-                    if pline[0] == '{' and pline[-1] =='}'\
+
+                    if pline[0] == '{' and pline[-1] == '}'\
                             and type(eval(pline)) is dict:
                         _args = pline
                     else:
                         _args = pline.replace(',', '')
-                        
+
             line = ' '.join([_cmd, _cls, _id, _args])
 
         except Exception as mess:
@@ -118,7 +118,7 @@ class HBNBCommand(cmd.Cmd):
     def emptyline(self):
         """ overrides emptyline method of CMD """
         pass
-    
+
     import re
 
     def do_create(self, arg):
@@ -160,8 +160,6 @@ class HBNBCommand(cmd.Cmd):
         # Print the ID to confirm creation
         print(new_instance.id)
 
-
-
     def help_create(self):
         """ help info for create method """
         print("Creates a class of any type")
@@ -185,11 +183,9 @@ class HBNBCommand(cmd.Cmd):
         else:
             # Convert obj to a dictionary and filter out any undesired attributes
             obj_dict = obj.to_dict() if hasattr(obj, "to_dict") else obj.__dict__.copy()
-            obj_dict.pop('_sa_instance_state', None)  # Remove SQLAlchemy state if it exists
+            obj_dict.pop('_sa_instance_state', None)  # Remove SQLAlchemy state if exists
 
-            # Format the output as expected
             print("[{}] ({}) {}".format(class_name, obj.id, obj_dict))
-
 
     def help_show(self):
         """ help info for show command """
@@ -321,7 +317,7 @@ class HBNBCommand(cmd.Cmd):
         new_dict = storage.all()[key]
 
         for i, att_name in enumerate(args):
-            
+
             if (i % 2 == 0):
                 att_val = args[i + 1]
                 if not att_name:
@@ -330,11 +326,11 @@ class HBNBCommand(cmd.Cmd):
                 if not att_val:
                     print("** value missing **")
                     return
-                
+
                 if att_name in HBNBCommand.types:
                     att_val = HBNBCommand.types[att_name](att_val)
 
-                
+
                 new_dict.__dict__.update({att_name: att_val})
 
         new_dict.save()
@@ -346,3 +342,4 @@ class HBNBCommand(cmd.Cmd):
 
 if __name__ == "__main__":
     HBNBCommand().cmdloop()
+
