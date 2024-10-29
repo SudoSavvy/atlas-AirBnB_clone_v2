@@ -167,32 +167,29 @@ class HBNBCommand(cmd.Cmd):
         print("Creates a class of any type")
         print("[Usage]: create <className>\n")
 
-    def do_show(self, args):
-        """ method to show single object """
-        new = args.partition(" ")
-        c_name = new[0]
-        c_id = new[2]
-
-        if c_id and ' ' in c_id:
-            c_id = c_id.partition(' ')[0]
-
-        if not c_name:
-            print("** class name missing **")
+    def do_show(self, arg):
+        args = arg.split()
+        if len(args) < 2:
+            print("** class name or ID missing **")
             return
 
-        if c_name not in HBNBCommand.classes:
+        class_name, instance_id = args[0], args[1]
+        if class_name not in classes:
             print("** class doesn't exist **")
             return
 
-        if not c_id:
-            print("** instance id missing **")
-            return
-
-        key = c_name + "." + c_id
-        try:
-            print(storage._FileStorage__objects[key])
-        except KeyError:
+        key = "{}.{}".format(class_name, instance_id)
+        obj = storage.all().get(key)
+        if not obj:
             print("** no instance found **")
+        else:
+            # Convert obj to a dictionary and filter out any undesired attributes
+            obj_dict = obj.to_dict() if hasattr(obj, "to_dict") else obj.__dict__.copy()
+            obj_dict.pop('_sa_instance_state', None)  # Remove SQLAlchemy state if it exists
+
+            # Format the output as expected
+            print("[{}] ({}) {}".format(class_name, obj.id, obj_dict))
+
 
     def help_show(self):
         """ help info for show command """
