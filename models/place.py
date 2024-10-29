@@ -4,8 +4,8 @@ from sqlalchemy.orm import relationship
 from models.base_model import BaseModel, Base
 
 place_amenity = Table(
-    'place_amenity', 
-    Base.metadata,   
+    'place_amenity',
+    Base.metadata,
     Column('place_id', String(60), ForeignKey('places.id'),
            primary_key=True, nullable=False),
     Column('amenity_id', String(60), ForeignKey('amenities.id'),
