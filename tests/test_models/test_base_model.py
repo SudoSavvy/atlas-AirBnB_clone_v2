@@ -9,7 +9,7 @@ import os
 from models.engine.db_storage import DBStorage
 
 
-class TestBaseModel(unittest.TestCase):
+class test_basemodel(unittest.TestCase):
     """ """
 
     def __init__(self, *args, **kwargs):
