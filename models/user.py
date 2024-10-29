@@ -18,5 +18,5 @@ class User(BaseModel, Base):
     last_name = Column(String(128))
     
     # Relationships
-    places = relationship("Place", secondary="place_amenity", back_populates="users", backref="user")
+    places = relationship("Place", secondary="place_amenity", backref="user")
     reviews = relationship("Review", cascade='all, delete, delete-orphan', backref="user")
