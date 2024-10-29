@@ -13,17 +13,16 @@ Base = declarative_base()
 
 
 class BaseModel:
-    """ Base class for all models defined. """
+    """ base class for all models defined """
     id = Column(String(60), nullable=False, primary_key=True, unique=True)
-    created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
-    updated_at = Column(DateTime, nullable=False, default=datetime.utcnow)
+    created_at = Column(DateTime, nullable=False, default=datetime.utcnow())
+    updated_at = Column(DateTime, nullable=False, default=datetime.utcnow())
 
     def __init__(self, *args, **kwargs):
-        """ Initializes a new base object. """
+        """ starts up base object and initializes it """
         self.id = kwargs.get('id', str(uuid4()))
         self.created_at = kwargs.get('created_at', datetime.utcnow())
         self.updated_at = kwargs.get('updated_at', self.created_at)
-
         if kwargs:
             for key, value in kwargs.items():
                 if key in ["created_at", "updated_at"]:
@@ -42,19 +41,14 @@ class BaseModel:
         models.storage.new(self)
         models.storage.save()
 
-def to_dict(self):
-    """Convert instance attributes to a dictionary, including custom handling for datetime."""
-    dictionary = self.__dict__.copy()
-    dictionary["__class__"] = self.__class__.__name__
-
-    # Convert datetime fields to ISO format strings
-    if "created_at" in dictionary:
-        dictionary["created_at"] = dictionary["created_at"].isoformat()
-    if "updated_at" in dictionary:
-        dictionary["updated_at"] = dictionary["updated_at"].isoformat()
-
-    return dictionary
-
+    def to_dict(self):
+        """ returns a dict representation of object """
+        dictionary = self.__dict__.copy()
+        dictionary['__class__'] = self.__class__.__name__
+        dictionary['created_at'] = self.created_at.isoformat()
+        dictionary['updated_at'] = self.updated_at.isoformat()
+        dictionary.pop('_sa_instance_state', None)
+        return dictionary
 
     def delete(self):
         """ delete current instance from active """
