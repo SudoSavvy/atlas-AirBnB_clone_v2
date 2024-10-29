@@ -57,7 +57,7 @@ class Place(BaseModel, Base):
         @amenities.setter
         def amenities(self, obj):
             """ append for adding an amenity """
-            if type(obj) == Amenity:
+            if isinstance(obj, Amenity):
                 self.amenity_ids.append(obj.id)
     else:
         reviews = relationship('Review', backref='place',
