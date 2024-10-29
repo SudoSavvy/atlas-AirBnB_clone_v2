@@ -40,15 +40,15 @@ class FileStorage:
             return self.__objects
 
     def new(self, obj):
-        """Adds the object to __objects and saves it to file.json."""
-        key = "{}.{}".format(obj.__class__.__name__, obj.id)
+        """ Adds a new object to the __objects dictionary. """
+        key = f"{obj.__class__.__name__}.{obj.id}"
         self.__objects[key] = obj
-        self.save()  # Immediately save to ensure data is written to file.json
-
+        self.save()
+        
     def save(self):
-        """Serializes __objects to JSON and saves it to file.json."""
-        with open(self.__file_path, "w") as file:
-            json.dump({key: obj.to_dict() for key, obj in self.__objects.items()}, file)
+        """ Serializes __objects to the JSON file. """
+        with open(self.__file_path, 'w') as f:
+            json.dump({key: obj.to_dict() for key, obj in self.__objects.items()}, f)
 
 
     def reload(self):
