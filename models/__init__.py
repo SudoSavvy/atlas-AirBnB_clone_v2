@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-""" FileStorage instance for application """
+""" init compartment """
 from models.engine.file_storage import FileStorage
 from models.engine.db_storage import DBStorage
 from models.base_model import BaseModel
@@ -12,8 +12,12 @@ from models.review import Review
 from os import getenv
 
 
-if getenv("HBNB_TYPE_STORAGE") == "db":
+storage_t = getenv("HBNB_TYPE_STORAGE")
+
+if storage_t == "db":
+    from models.engine.db_storage import DBStorage
     storage = DBStorage()
 else:
+    from models.engine.file_storage import FileStorage
     storage = FileStorage()
 storage.reload()

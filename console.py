@@ -182,7 +182,10 @@ class HBNBCommand(cmd.Cmd):
             print("** no instance found **")
         else:
             # Convert obj to dictionary and filter out undesired attributes
-            obj_dict = obj.to_dict() if hasattr(obj, "to_dict") else obj.__dict__.copy()
+            if hasattr(obj, "to_dict"):
+                obj_dict = obj.to_dict()
+            else:
+                obj_dict = obj.__dict__.copy()
             obj_dict.pop('_sa_instance_state', None)  # Rmv SQLA state if exis
             # Format the output as expected
             print("[{}] ({}) {}".format(class_name, obj.id, obj_dict))
@@ -215,7 +218,7 @@ class HBNBCommand(cmd.Cmd):
         key = c_name + "." + c_id
 
         try:
-            del(storage.all()[key])
+            del (storage.all()[key])
             storage.save()
         except KeyError:
             print("** no instance found **")
