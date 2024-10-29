@@ -181,9 +181,12 @@ class HBNBCommand(cmd.Cmd):
         if not obj:
             print("** no instance found **")
         else:
-            # Convert obj to a dictionary and filter out any undesired attributes
-            obj_dict = obj.to_dict() if hasattr(obj, "to_dict") else obj.__dict__.copy()
-            obj_dict.pop('_sa_instance_state', None)  # Remove SQLAlchemy state if exists
+            # Convert obj to dictionary and filter any undesired attributes
+            if hasattr(obj, "to_dict"):
+                obj_dict = obj.to_dict()
+            else:
+                obj_dict = obj.__dict__.copy()
+            obj_dict.pop('_sa_instance_state', None)
 
             print("[{}] ({}) {}".format(class_name, obj.id, obj_dict))
 
@@ -330,7 +333,6 @@ class HBNBCommand(cmd.Cmd):
                 if att_name in HBNBCommand.types:
                     att_val = HBNBCommand.types[att_name](att_val)
 
-
                 new_dict.__dict__.update({att_name: att_val})
 
         new_dict.save()
@@ -340,6 +342,6 @@ class HBNBCommand(cmd.Cmd):
         print("Updates an object with new information")
         print("Usage: update <className> <id> <attName> <attVal>\n")
 
+
 if __name__ == "__main__":
     HBNBCommand().cmdloop()
-
