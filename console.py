@@ -10,6 +10,7 @@ import shlex
 from shlex import split
 from models.base_model import BaseModel
 from models.__init__ import storage
+from models import storage
 from shlex import split
 from models import storage
 from datetime import datetime
@@ -19,6 +20,15 @@ from models.state import State
 from models.city import City
 from models.amenity import Amenity
 from models.review import Review
+
+
+# Define the classes dictionary to map class names to classes
+classes = {
+    "State": State,
+    "City": City,
+    "User": User,
+    "Place": Place
+}
 
 class HBNBCommand(cmd.Cmd):
     """ console class """
