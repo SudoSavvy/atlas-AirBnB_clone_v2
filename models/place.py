@@ -15,3 +15,4 @@ class Place(BaseModel):
     name = Column(String(128), nullable=False)
 
     amenities = relationship("Amenity", secondary="place_amenity", back_populates="places")
+    users = relationship("User", secondary="place_amenity", back_populates="places")
