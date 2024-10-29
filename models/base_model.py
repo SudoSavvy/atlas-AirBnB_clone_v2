@@ -43,13 +43,13 @@ class BaseModel:
         models.storage.save()
 
     def to_dict(self):
-        """ returns a dict representation of object """
-        dictionary = self.__dict__.copy()
-        dictionary['__class__'] = self.__class__.__name__
-        dictionary['created_at'] = self.created_at.isoformat()
-        dictionary['updated_at'] = self.updated_at.isoformat()
-        dictionary.pop('_sa_instance_state', None)
-        return dictionary
+        """ Converts the object to a dictionary. """
+        return {
+            'id': self.id,
+            'created_at': self.created_at.isoformat(),
+            'updated_at': self.updated_at.isoformat(),
+            **self.__dict__
+        }
 
     def delete(self):
         """ delete current instance from active """
