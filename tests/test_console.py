@@ -13,7 +13,7 @@ from console import HBNBCommand
 from models.state import State
 
 
-@unittest.skipIf(type(models.storage) == DBStorage, "Testing DBstorage")
+@unittest.skipIf(isinstance(models.storage, DBStorage), "Testing DBStorage")
 class TestHBNBCommand(unittest.TestCase):
     """ unittesting for console"""
     @classmethod
@@ -31,7 +31,7 @@ class TestHBNBCommand(unittest.TestCase):
         except IOError:
             pass
         del test_cls.HBNB
-        if type(models.storage) == DBStorage:
+        if type(models.storage) is DBStorage:
             models.storage._DBStorage__session.close()
 
     def setUp(self):
