@@ -182,10 +182,7 @@ class HBNBCommand(cmd.Cmd):
             print("** no instance found **")
         else:
             # Convert obj to dictionary and filter any undesired attributes
-            if hasattr(obj, "to_dict"):
-                obj_dict = obj.to_dict()
-            else:
-                obj_dict = obj.__dict__.copy()
+            obj_dict = obj.to_dict() if hasattr(obj, "to_dict") else obj.__dict__.copy()
             obj_dict.pop('_sa_instance_state', None)
 
             print("[{}] ({}) {}".format(class_name, obj.id, obj_dict))
