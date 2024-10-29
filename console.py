@@ -71,20 +71,20 @@ class HBNBCommand(cmd.Cmd):
 
             pline = pline[pline.find('(') + 1:pline.find(')')]
             if pline:
-
+                
                 pline = pline.partition(', ')
 
                 _id = pline[0].replace('\"', '')
 
                 pline = pline[2].strip()
                 if pline:
-
-                    if pline[0] == '{' and pline[-1] == '}'\
+                    
+                    if pline[0] == '{' and pline[-1] =='}'\
                             and type(eval(pline)) is dict:
                         _args = pline
                     else:
                         _args = pline.replace(',', '')
-
+                        
             line = ' '.join([_cmd, _cls, _id, _args])
 
         except Exception as mess:
@@ -165,27 +165,27 @@ class HBNBCommand(cmd.Cmd):
 
     def do_show(self, arg):
         """ shows class instance """
-        args = arg.split()
-        if len(args) < 2:
-            print("** class name or ID missing **")
-            return
+    args = arg.split()
+    if len(args) < 2:
+        print("** class name or ID missing **")
+        return
 
-        class_name, instance_id = args[0], args[1]
-        if class_name not in classes:
-            print("** class doesn't exist **")
-            return
+    class_name, instance_id = args[0], args[1]
+    if class_name not in classes:
+        print("** class doesn't exist **")
+        return
 
-        key = "{}.{}".format(class_name, instance_id)
-        obj = storage.all().get(key)
-        if not obj:
-            print("** no instance found **")
-        else:
-            # Convert obj to a dictionary and filter out undesired attributes
-            if hasattr(obj, "to_dict"):
-                obj_dict = obj.to_dict()
-            else:
-                obj_dict = obj.__dict__.copy()
-            obj_dict.pop('_sa_instance_state', None)
+    key = "{}.{}".format(class_name, instance_id)
+    obj = storage.all().get(key)
+    if not obj:
+        print("** no instance found **")
+    else:
+        # Convert obj to a dictionary and filter out undesired attributes
+        obj_dict = (
+            obj.to_dict() if hasattr(obj, "to_dict") else obj.__dict__.copy()
+        )
+        obj_dict.pop('_sa_instance_state', None)  # Remove SQLAlchemy state if it exists
+
 
     def help_show(self):
         """ help info for show command """
@@ -305,7 +305,7 @@ class HBNBCommand(cmd.Cmd):
 
             if not att_name and args[0] != ' ':
                 att_name = args[0]
-
+            
             if args[2] and args[2][0] == '\"':
                 att_val = args[2][1:args[2].find('\"', 1)]
 
@@ -317,7 +317,7 @@ class HBNBCommand(cmd.Cmd):
         new_dict = storage.all()[key]
 
         for i, att_name in enumerate(args):
-
+            
             if (i % 2 == 0):
                 att_val = args[i + 1]
                 if not att_name:
@@ -326,7 +326,7 @@ class HBNBCommand(cmd.Cmd):
                 if not att_val:
                     print("** value missing **")
                     return
-
+                
                 if att_name in HBNBCommand.types:
                     att_val = HBNBCommand.types[att_name](att_val)
 

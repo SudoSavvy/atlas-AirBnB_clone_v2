@@ -1,4 +1,3 @@
-
 #!/usr/bin/python3
 """ unittests for 'models/engine/db_storage.py' """
 import models
