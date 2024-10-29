@@ -42,14 +42,19 @@ class BaseModel:
         models.storage.new(self)
         models.storage.save()
 
-    def to_dict(self):
-        """ Converts the object to a dictionary. """
-        return {
-            'id': self.id,
-            'created_at': self.created_at.isoformat(),
-            'updated_at': self.updated_at.isoformat(),
-            **self.__dict__
-        }
+def to_dict(self):
+    """Convert instance attributes to a dictionary, including custom handling for datetime."""
+    dictionary = self.__dict__.copy()
+    dictionary["__class__"] = self.__class__.__name__
+
+    # Convert datetime fields to ISO format strings
+    if "created_at" in dictionary:
+        dictionary["created_at"] = dictionary["created_at"].isoformat()
+    if "updated_at" in dictionary:
+        dictionary["updated_at"] = dictionary["updated_at"].isoformat()
+
+    return dictionary
+
 
     def delete(self):
         """ delete current instance from active """
