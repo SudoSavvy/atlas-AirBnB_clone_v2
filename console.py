@@ -164,6 +164,7 @@ class HBNBCommand(cmd.Cmd):
         print("[Usage]: create <className>\n")
 
     def do_show(self, arg):
+        """ shows class instance """
         args = arg.split()
         if len(args) < 2:
             print("** class name or ID missing **")
@@ -180,9 +181,10 @@ class HBNBCommand(cmd.Cmd):
             print("** no instance found **")
         else:
             # Convert obj to a dictionary and filter out undesired attributes
-            obj_dict = (
-            obj.to_dict() if hasattr(obj, "to_dict") else obj.__dict__.copy()
-            )
+            if hasattr(obj, "to_dict"):
+                obj_dict = obj.to_dict()
+            else:
+                obj_dict = obj.__dict__.copy()
             obj_dict.pop('_sa_instance_state', None)
 
     def help_show(self):
