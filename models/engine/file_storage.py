@@ -15,6 +15,7 @@ import shlex
 class FileStorage:
     """This class serializes instances to a JSON file and
     deserializes JSON file to instances
+
     Attributes:
         __file_path: path to the JSON file
         __objects: objects will be stored
@@ -48,8 +49,11 @@ class FileStorage:
     def save(self):
         """Serializes __objects to the JSON file"""
         with open(self.__file_path, "w") as file:
-            json.dump({key: obj.to_dict() for key, obj in self.__objects.items()}, file)
-
+            objects_dict = {
+            key: obj.to_dict() 
+            for key, obj in self.__objects.items()
+        }
+        json.dump(objects_dict, file)
 
     def reload(self):
         """Deserializes the JSON file to __objects if it exists."""
@@ -62,8 +66,7 @@ class FileStorage:
                 json.dump({}, file)
 
     def delete(self, obj=None):
-        """ delete an existing element
-        """
+        """ delete an existing element """
         if obj:
             key = "{}.{}".format(type(obj).__name__, obj.id)
             del self.__objects[key]
