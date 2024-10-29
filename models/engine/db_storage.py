@@ -19,7 +19,6 @@ class DBStorage:
     __session = None
 
     def __init__(self):
-        """ initializes baselines """
         user = getenv("HBNB_MYSQL_USER")
         passwd = getenv("HBNB_MYSQL_PWD")
         db = getenv("HBNB_MYSQL_DB")
@@ -69,7 +68,7 @@ class DBStorage:
         """ reorg config """
         Base.metadata.create_all(self.__engine)
         sec = sessionmaker(bind=self.__engine, expire_on_commit=False)
-        session = scoped_session(sec)
+        Session = scoped_session(sec)
         self.__session = Session()
 
     def close(self):

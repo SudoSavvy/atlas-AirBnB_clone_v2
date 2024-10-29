@@ -16,4 +16,4 @@ class City(BaseModel, Base):
     state_id = Column(String(60), ForeignKey('states.id'), nullable=False)
 
     # Relationship with Place (no backref or specify a unique name)
-    places = relationship('Place', back_populates='city')
+    places = relationship('Place', back_populates='city')  # Use back_populates instead of backref
