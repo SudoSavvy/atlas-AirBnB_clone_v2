@@ -166,27 +166,26 @@ class HBNBCommand(cmd.Cmd):
         print("[Usage]: create <className>\n")
 
     def do_show(self, arg):
-        args = arg.split()
-        if len(args) < 2:
-            print("** class name or ID missing **")
-            return
+    args = arg.split()
+    if len(args) < 2:
+        print("** class name or ID missing **")
+        return
 
-        class_name, instance_id = args[0], args[1]
-        if class_name not in classes:
-            print("** class doesn't exist **")
-            return
+    class_name, instance_id = args[0], args[1]
+    if class_name not in classes:
+        print("** class doesn't exist **")
+        return
 
-        key = "{}.{}".format(class_name, instance_id)
-        obj = storage.all().get(key)
-        if not obj:
-            print("** no instance found **")
-        else:
-            # Convert obj to a dictionary and filter out any undesired attributes
-            obj_dict = obj.to_dict() if hasattr(obj, "to_dict") else obj.__dict__.copy()
-            obj_dict.pop('_sa_instance_state', None)  # Remove SQLAlchemy state if it exists
-
-            # Format the output as expected
-            print("[{}] ({}) {}".format(class_name, obj.id, obj_dict))
+    key = "{}.{}".format(class_name, instance_id)
+    obj = storage.all().get(key)
+    if not obj:
+        print("** no instance found **")
+    else:
+        # Convert obj to a dictionary and filter out undesired attributes
+        obj_dict = (
+            obj.to_dict() if hasattr(obj, "to_dict") else obj.__dict__.copy()
+        )
+        obj_dict.pop('_sa_instance_state', None)  # Remove SQLAlchemy state if it exists
 
 
     def help_show(self):
