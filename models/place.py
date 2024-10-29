@@ -9,10 +9,13 @@ place_amenity = Table('place_amenity', Base.metadata,
     extend_existing=True
 )
 
-class Place(BaseModel):
+class Place(BaseModel, Base):
+    """Represents a Place for a MySQL database."""
     __tablename__ = 'places'
-    id = Column(String(60), primary_key=True)
-    name = Column(String(128), nullable=False)
 
-    amenities = relationship("Amenity", secondary="place_amenity", back_populates="places")
-    users = relationship("User", secondary="place_amenity", back_populates="places")
+    id = Column(String(60), primary_key=True)
+    city_id = Column(String(60), ForeignKey('cities.id'), nullable=False)  # Foreign key reference
+    user_id = Column(String(60), ForeignKey('users.id'), nullable=False)
+
+    # Relationship with City
+    city = relationship('City', back_populates='places')  # Make sure this matches

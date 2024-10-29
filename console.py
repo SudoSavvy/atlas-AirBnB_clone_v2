@@ -118,7 +118,6 @@ class HBNBCommand(cmd.Cmd):
     def emptyline(self):
         """ overrides emptyline method of CMD """
         pass
-    
 
     def do_create(self, arg):
         args = arg.split()
