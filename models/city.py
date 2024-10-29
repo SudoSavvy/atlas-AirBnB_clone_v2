@@ -17,4 +17,3 @@ class City(BaseModel, Base):
 
     # Relationship with Place (no backref or specify a unique name)
     places = relationship('Place', back_populates='city')
-
