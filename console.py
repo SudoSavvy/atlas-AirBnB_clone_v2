@@ -118,7 +118,7 @@ class HBNBCommand(cmd.Cmd):
     def emptyline(self):
         """ overrides emptyline method of CMD """
         pass
-
+    
     def do_create(self, arg):
         args = arg.split()
         if not args:
@@ -181,12 +181,9 @@ class HBNBCommand(cmd.Cmd):
         if not obj:
             print("** no instance found **")
         else:
-            # Convert obj to a dictionary and filter out undesired attributes.
-            obj_dict = (
-                obj.to_dict() if hasattr(obj, "to_dict") else obj.__dict__.copy()
-            )
-            # Remove SQLAlchemy state if it exists
-            obj_dict.pop('_sa_instance_state', None)
+            # Convert obj to a dictionary and filter out any undesired attributes
+            obj_dict = obj.to_dict() if hasattr(obj, "to_dict") else obj.__dict__.copy()
+            obj_dict.pop('_sa_instance_state', None)  # Remove SQLAlchemy state if it exists
 
             # Format the output as expected
             print("[{}] ({}) {}".format(class_name, obj.id, obj_dict))
