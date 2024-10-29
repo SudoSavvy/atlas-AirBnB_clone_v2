@@ -46,9 +46,9 @@ class FileStorage:
         self.save()  # Immediately save to ensure data is written to file.json
 
     def save(self):
-        """ Serializes __objects to the JSON file. """
-        with open(self.__file_path, 'w') as f:
-            json.dump({key: obj.to_dict() for key, obj in self.__objects.items()}, f)
+        """Serializes __objects to the JSON file"""
+        with open(self.__file_path, "w") as file:
+            json.dump({key: obj.to_dict() for key, obj in self.__objects.items()}, file)
 
 
     def reload(self):
